@@ -16,13 +16,13 @@ library(SpiecEasi)
 ### Create ASV df with underlying ASV-ASV relationships ###
 # Set interaction strength, number of ASVs, and probability of interaction
 interaction_strength <- 100
-num_ASVs <- 400
+num_ASVs <- 20
 prob <- 0.01
 
 # Simulate ASV-ASV interactions (output is a covariance matrix)
 
 # 1.) Barabasi-Albert method
-ASVxASV <- sample_pa(400,directed=FALSE)
+ASVxASV <- sample_pa(20,directed=FALSE)
 ASVxASV <- get.adjacency(ASVxASV)
 ASVxASV<- as.matrix(ASVxASV)
 diag(ASVxASV) <- prob
