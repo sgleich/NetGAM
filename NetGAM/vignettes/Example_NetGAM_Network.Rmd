@@ -1,0 +1,87 @@
+---
+title: "Example_NetGAM_Network"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Example_NetGAM_Network}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+## Installation
+We recommend installing NetGAM using the install_github function in the `devtools` package.
+```{r devtools, eval=FALSE}
+options(warn=-1)
+library(devtools)
+devtools::install_github("sgleich/NetGAM")
+```
+
+```{r, eval=FALSE}
+library(NetGAM)
+install.packages(c("mgcv","dplyr","compositions","stats","psych","pulsar","batchtools","huge"))
+library(mgcv)
+library(pulsar)
+library(batchtools)
+library(dplyr)
+library(psych)
+library(huge)
+library(stats)
+```
+## NetGAM::netGAM.df
+The first function available in the NetGAM package will take a species abundance datafame (samples as rows and species as columns) and will GAM-transform the species abundance data. These GAM-transformed species abundance values can be thought of as species abundance values with a reduced influence of time. The GAM-transformed dataframe can be used as input for a downstream network analysis of your choice. 
+```{r,eval=FALSE}
+library(mgcv)
+# Load in species abundance dataframe. Here, the samples are rows (1-200) and the columns are species (V1-V400). The species abundance values here are relative abundance values.
+data <- system.file("extdata", "output_asvs.csv", package = "NetGAM")
+df <- read.csv(data,header=TRUE,row.names=1)
+
+# The netGAM.df function requires two vectors as input: the month of year vector and the day of time-series vector. We will set up our vectors for input in the function.
+moy <- rep(1:12,length=200)
+dayOfTs <- 1:200
+
+# Now, we will run the netGAM.df function. The parameter clrt is being set to TRUE here (default) because we want to CLR-transform our data to account for compositionality. 
+df.out <- NetGAM::netGAM.df(df,moy,dayOfTs,clrt=TRUE)
+
+# df.out is the GAM-transformed dataframe that can be used in downstream association network analyses. 
+```
+## NetGAM::netGAM.network (Glasso)
+The second function available in the NetGAM package will take a species abundance datafame (samples as rows and species as columns) and will GAM-transform the species abundance data. Then, the GAM-transformed data will be used as input for a graphical lasso (glasso), pairwise spearman correlation (scc), or pairwise pearson correlation (pcc) network analysis. The result of the netGAM.network function will be a species-species adjacency matrix in which 1s imply an association between two species and 0s imply no association between two species. This adjacnecy matrix can then be used to graph the network in the `igraph` package.  
+```{r,eval=FALSE}
+library(pulsar)
+# Load in species abundance dataframe. Here, the samples are rows (1-200) and the columns are species (V1-V400). The species abundance values here are relative abundance values.
+data <- system.file("extdata", "output_asvs.csv", package = "NetGAM")
+df <- read.csv(data,header=TRUE,row.names=1)
+
+# The netGAM.network function requires two vectors as input: the month of year vector and the day of time-series vector. We will set up our vectors for input in the function.
+moy <- rep(1:12,length=200)
+dayOfTs <- 1:200
+
+# Now, we will run the netGAM.network function. The parameter clrt is being set to TRUE here (default) because we want to CLR-transform our data to account for compositionality. We will first run a glasso network (default) and then we can try running a scc network after.
+glasso.net <- NetGAM::netGAM.network(df,moy,dayOfTs,clrt=TRUE,method="glasso")
+library(igraph)
+glasso.graph <- graph_from_adjacency_matrix(glasso.net,mode="undirected")
+plot(glasso.graph,vertex.label=NA)
+```
+## NetGAM::netGAM.network (SCC)
+We can also run the netGAM.network function to build a GAM-transformed SCC network.
+```{r, eval=FALSE}
+# Load in species abundance dataframe. Here, the samples are rows (1-200) and the columns are species (V1-V400). The species abundance values here are relative abundance values.
+data <- system.file("extdata", "output_asvs.csv", package = "NetGAM")
+df <- read.csv(data,header=TRUE,row.names=1)
+
+# The netGAM.network function requires two vectors as input: the month of year vector and the day of time-series vector. We will set up our vectors for input in the function.
+moy <- rep(1:12,length=200)
+dayOfTs <- 1:200
+
+# Now, we will run the netGAM.network function. The parameter clrt is being set to TRUE here (default) because we want to CLR-transform our data to account for compositionality. We will run a scc network. The adjusted p-value that will be used as a cutoff (to determine if an edge exists or not) will be 0.05 in this example.
+scc.net <- NetGAM::netGAM.network(df,moy,dayOfTs,clrt=TRUE,method="scc",pvalue=0.05)
+library(igraph)
+scc.graph <- graph_from_adjacency_matrix(scc.net,mode="undirected")
+plot(scc.graph,vertex.label=NA)
+```
+

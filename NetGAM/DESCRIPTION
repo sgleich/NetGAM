@@ -1,0 +1,37 @@
+Package: NetGAM
+Title: Using generalized additive models to improve the predictive power of ecological network analyses constructed with time-series data 
+Version: 0.1
+Authors@R: c(
+    person("Samantha", "Gleich", email = "gleich@usc.edu",
+                  role = c("aut", "cre")),
+    person("Jacob","Cram",email="jcram@umces.edu",role="aut"),
+    person("Jake","Weissman",email="jakeweis@usc.edu",role="aut"),
+    person("David","Caron",email="dcaron@usc.edu",role="aut"))
+Description: The functions available in this package apply a generalized 
+    additive mixed model (gamm)-based data transformation to microbial species 
+    abundance data. This data transformation can be applied to microbial 
+    abundance counts prior to carrying out an ecological network analysis with
+    time-series data to ensure that seasonal and long-term time-series 
+    features do not lead to spurious or inaccurate connections in downstream
+    network analyses. The NetGAM data transformation method is designed to 
+    capture and remove monthly, long-term, and autocorrelative trends from 
+    microbial abundance data and is therefore not optimized for time-series 
+    data that are not collected at monthly sampling intervals.
+Depends: R (>= 3.1.0)
+Encoding: UTF-8
+License: MIT + file LICENSE
+LazyData: true
+Imports:
+    stats,
+    dplyr,
+    pulsar,
+    batchtools,
+    huge,
+    mgcv,
+    psych,
+    compositions
+RoxygenNote: 7.1.2
+Suggests: 
+    rmarkdown,
+    knitr
+VignetteBuilder: knitr
