@@ -523,8 +523,7 @@ netGAM.network <- function(df,MOY,MCount,clrt=TRUE,method="glasso",pvalue=NULL){
     fit.fin <- as.data.frame(fit.fin)
     colnames(fit.fin) <- colnames(output.asvs.gam)
     rownames(fit.fin)<- colnames(output.asvs.gam)
-    fit.fin <- as.matrix(fit.fin)
-    return(fit.fin)}
+    fit.fin <- as.matrix(fit.fin)}
 
   # GAM-SCC
   if (method=="scc"){
@@ -534,8 +533,7 @@ netGAM.network <- function(df,MOY,MCount,clrt=TRUE,method="glasso",pvalue=NULL){
     p.val[p.val==1] <- 0.99
     p.val[p.val<pvalue] <- 1
     p.val[p.val !=1] <- 0
-    fit.fin <- as.matrix(p.val)
-    return(fit.fin)}
+    fit.fin <- as.matrix(p.val)}
 
   # GAM-PCC
   if (method=="pcc"){
@@ -546,6 +544,7 @@ netGAM.network <- function(df,MOY,MCount,clrt=TRUE,method="glasso",pvalue=NULL){
     p.val[p.val<pvalue] <- 1
     p.val[p.val !=1] <- 0
     fit.fin <- as.matrix(p.val)}
+
   return(fit.fin)}
 
 
