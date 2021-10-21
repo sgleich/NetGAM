@@ -16,13 +16,13 @@ library(SpiecEasi)
 ### Create ASV df with underlying ASV-ASV relationships ###
 # Set interaction strength, number of ASVs, and probability of interaction
 interaction_strength <- 100
-num_ASVs <- 400
+num_ASVs <- 20
 prob <- 0.01
 
 # Simulate ASV-ASV interactions (output is a covariance matrix)
 
 # 1.) Barabasi-Albert method
-ASVxASV <- sample_pa(400,directed=FALSE)
+ASVxASV <- sample_pa(20,directed=FALSE)
 ASVxASV <- get.adjacency(ASVxASV)
 ASVxASV<- as.matrix(ASVxASV)
 diag(ASVxASV) <- prob
@@ -160,15 +160,7 @@ df_out$sum <- rowSums(df_out)
 df_out_rel <- df_out/df_out$sum
 df_out_rel$sum <- NULL
 df_out_rel <- as.matrix(df_out_rel)
-
-# CLR transform mock ASV data
 output.asvs<- as.data.frame(df_out_rel)
-
-### Finalize mock ASV df and save ###
-
-# Add back time-series variables to df (i.e. month of year and month of time-series)
-# output.asvs$MonthOfYear <- df.new$MonthOfYear
-# output.asvs$MonthCount <- df.new$MonthCount
 
 # Save mock ASV df to use the GAMGlasso network analysis
 write.csv(output.asvs,"output_asvs.csv")
