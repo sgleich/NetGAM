@@ -60,6 +60,16 @@ get_resid <- function(data,cols,cors) {
   options(warn =0)
   return(tmp)}
 
+#' # Name: get_upper_tri
+#'
+#' # Description: Keeps upper triangle of adjacency matrix and makes the lower triangle NAs
+#'
+#' @param mat Matrix of p-values where the upper triangle contains adjusted p-values.
+#' @return: Matrix of p-values where the upper triangle contained adjusted p-values and the lower triangle contains NAs.
+get_upper_tri <- function(mat){
+  cormat[lower.tri(mat)]<- NA
+  return(mat)
+}
 
 #' Name: netGAM.df
 #'
@@ -291,7 +301,7 @@ netGAM.df <- function(df, MOY, MCount, clrt=TRUE){
 #' @param gam_df GAM-transformed species abundance dataframe with samples as rows species as columns (i.e. output of netGAM.df function)
 #' @param method Networking method to use (default is glasso). "glasso" = graphical lasso network constructed with the "batch.pulsar" function in the pulsar package with StARS selection; "scc" = spearman correlation network constructed with the "corr.test" function in the psych package; "pcc" = pearson correlation network constructed with the "corr.test" function in the psych package.
 #' @param pvalue P-value cutoff for deciding whether or not an edge exists (default is NULL). P-values in corrleation networks are bonferroni-adjusted prior to declaring cutoff. P-value only needed for scc and pcc networks.
-#' @return Adjacency matrix of network predicitons (1 = edge, 0 = no edge)
+#' @return Adjacency matrix of network predicitons (1 = edge, 0 = no edge) for glasso networks and an edgelist with p-values for correlation networks
 #'
 #' @export
 netGAM.network <- function(gam_df,method="glasso",pvalue=NULL){
@@ -321,20 +331,21 @@ netGAM.network <- function(gam_df,method="glasso",pvalue=NULL){
     output.asvs.cor <- psych::corr.test(output.asvs.gam, method="spearman",adjust="bonferroni")
     p.val <- as.matrix(output.asvs.cor$p)
     diag(p.val) <- 1
-    p.val[p.val==1] <- 0.99
-    p.val[p.val<pvalue] <- 1
-    p.val[p.val !=1] <- 0
-    fit.fin <- as.matrix(p.val)}
+    diag(p.val) <- 1
+    try <- p.val %>% get_upper_tri() %>% reshape2::melt() %>% na.omit() %>% rename(p = value)
+    try <- subset(try, p < pvalue)
+    try$p <- NULL
+    fit.fin <- as.matrix(try)}
 
   # GAM-PCC
   if (method=="pcc"){
     output.asvs.cor <- psych::corr.test(output.asvs.gam, method="pearson",adjust="bonferroni")
     p.val <- as.matrix(output.asvs.cor$p)
     diag(p.val) <- 1
-    p.val[p.val==1] <- 0.99
-    p.val[p.val<pvalue] <- 1
-    p.val[p.val !=1] <- 0
-    fit.fin <- as.matrix(p.val)}
+    try <- p.val %>% get_upper_tri() %>% reshape2::melt() %>% na.omit() %>% rename(p = value)
+    try <- subset(try, p < pvalue)
+    try$p <- NULL
+    fit.fin <- as.matrix(try)}
 
   return(fit.fin)}
 

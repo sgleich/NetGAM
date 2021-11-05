@@ -14,7 +14,7 @@ netGAM.network(gam_df, method = "glasso", pvalue = NULL)
 \item{pvalue}{P-value cutoff for deciding whether or not an edge exists (default is NULL). P-values in corrleation networks are bonferroni-adjusted prior to declaring cutoff. P-value only needed for scc and pcc networks.}
 }
 \value{
-Adjacency matrix of network predicitons (1 = edge, 0 = no edge)
+Adjacency matrix of network predicitons (1 = edge, 0 = no edge) for glasso networks and an edgelist with p-values for correlation networks
 }
 \description{
 Description: Takes a GAM-transformed species abundance dataframe as input (output of netGAM.df function), runs a network analysis on the gamm residuals, and returns an adjacency matrix of network-predicted associations.
