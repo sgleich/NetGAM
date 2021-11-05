@@ -63,7 +63,7 @@ We can also run the netGAM.network function to build a GAM-transformed SCC netwo
 # Run the netGAM.network function using the output of the netGAM.df function (i.e. df.out) as input. Here, will will run a scc network.
 scc.net <- NetGAM::netGAM.network(df.out,method="scc",pvalue=0.05)
 library(igraph)
-scc.graph <- graph_from_edgelist(scc.net,mode="undirected")
+scc.graph <- graph_from_edgelist(scc.net,directed=FALSE)
 plot(scc.graph,vertex.label=NA)
 ```
 

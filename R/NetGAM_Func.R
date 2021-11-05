@@ -67,7 +67,7 @@ get_resid <- function(data,cols,cors) {
 #' @param mat Matrix of p-values where the upper triangle contains adjusted p-values.
 #' @return: Matrix of p-values where the upper triangle contained adjusted p-values and the lower triangle contains NAs.
 get_upper_tri <- function(mat){
-  cormat[lower.tri(mat)]<- NA
+  mat[lower.tri(mat)]<- NA
   return(mat)
 }
 
