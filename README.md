@@ -27,4 +27,4 @@ install.packages(c("mgcv","dplyr","compositions","stats","psych","pulsar","batch
 ```
 
 # Example
-An example of how to use the `NetGAM` package is outlined [here](https://sgleich.github.io/vignettes/Example_NetGAM_Network.pdf).
+An example of how to use the `NetGAM` package is outlined <a href="NetGAM.github.io/vignettes/Example_NetGAM_Network.pdf" target="_blank">PDF.</a>.
