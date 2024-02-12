@@ -312,7 +312,7 @@ netGAM.network <- function(gam_df,method="glasso",pvalue=NULL){
 
   if (method=="glasso"){
     lams  <- pulsar::getLamPath(pulsar::getMaxCov(output.asvs.gam), .01, len=30)
-    hugeargs <- list(lambda=lams, verbose=FALSE)
+    hugeargs <- list(lambda=lams, verbose=FALSE, method='glasso')
     out.p <- pulsar::batch.pulsar(output.asvs.gam, fargs=hugeargs,rep.num=50, criterion = "stars")
     opt <- out.p$stars
     n <- opt$opt.index
